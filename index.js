@@ -1,19 +1,38 @@
-const fastify = require('fastify')({ logger: true, connectionTimeout: 5000 });
-const generateNewWorker = require('./utils/generateNewWorker');
-const requestTracker = require('./utils/requestTracker');
+const fastify = require("fastify")({ logger: true, connectionTimeout: 5000 });
+const requestTracker = require("./utils/requestTracker");
+const { WorkerClass } = require("./classes/WorkerClass.js");
+const correlationIdPlugin = require("./plugins/correlationIdPlugin");
 
-const getCatsWorker = generateNewWorker('getCatsWorker');
-const getDogsWorker = generateNewWorker('getDogsWorker');
+// Register the plugin (Task #2)
+fastify.register(correlationIdPlugin);
 
-fastify.get('/getCatsInfo', function handler (request, reply) {
-  requestTracker[request.id] = (result) => reply.send(result)
-  getCatsWorker.postMessage({ requestId: request.id});
-})
+// Worker get created as a Class (Task #3)
+let catsWorker = new WorkerClass("getCatsWorker");
+let dogsWorker = new WorkerClass("getDogsWorker");
 
-fastify.get('/getDogsInfo', function handler (request, reply) {
-  requestTracker[request.id] = (result) => reply.send(result)
-  getDogsWorker.postMessage({ requestId: request.id });
-})
+console.log("-> catsWorker and dogsWorker is being created");
+
+fastify.get("/getCatsInfo", function handler(request, reply) {
+  requestTracker[request.id] = (result) => reply.send(result);
+
+  if (catsWorker.workerTerminated) {
+    catsWorker = new WorkerClass("getCatsWorker");
+    console.log("-> catsWorker is being created");
+  }
+  catsWorker.worker.postMessage({ requestId: request.id });
+  catsWorker.resetIdleTimeout();
+});
+
+fastify.get("/getDogsInfo", function handler(request, reply) {
+  requestTracker[request.id] = (result) => reply.send(result);
+
+  if (dogsWorker.workerTerminated) {
+    dogsWorker = new WorkerClass("getDogsWorker");
+    console.log("-> dogsWorker is being created");
+  }
+  dogsWorker.worker.postMessage({ requestId: request.id });
+  dogsWorker.resetIdleTimeout();
+});
 
 fastify.listen({ port: 3000 }, (err) => {
   if (err) {
