@@ -1,3 +1,9 @@
+## Developer name: Tomer Doar
+
+## Email: tomerdoar@hotmail.com
+
+## Answers:
+
 ## Task 1 - Identify and fix the issue with getCatsInfo API
 
 The reason for the bug is because in getCatsInfo.js file at the refreshToken correlationId inside the try we are trying to access data.value.key, but data.value doesn't exist. Therefore this error is being catch and the error is being thrown. Since it is being thrown, it goes to the worker.on(Error) in the generateNewWorker file, and the worker is being terminate.

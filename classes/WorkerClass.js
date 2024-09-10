@@ -6,6 +6,7 @@ const IDLE_TIME_LIMIT = 15 * 60 * 1000; // 15 minutes in milliseconds
 
 class WorkerClass {
   constructor(workerName) {
+    this.name = workerName;
     this.worker = new Worker(path.join(__dirname, "../workers", workerName));
     this.idleTimeout = null;
     this.workerTerminated = false;
@@ -26,7 +27,7 @@ class WorkerClass {
     }
 
     this.idleTimeout = setTimeout(() => {
-      console.log("Terminating worker due to inactivity");
+      console.log(`Terminating ${this.name} due to inactivity`);
       this.worker.postMessage("terminate");
       this.worker.terminate();
       this.workerTerminated = true;

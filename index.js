@@ -17,7 +17,7 @@ fastify.get("/getCatsInfo", function handler(request, reply) {
 
   if (catsWorker.workerTerminated) {
     catsWorker = new WorkerClass("getCatsWorker");
-    console.log("-> catsWorker is being created");
+    console.log("-> getCatsWorker is being created");
   }
   catsWorker.worker.postMessage({ requestId: request.id });
   catsWorker.resetIdleTimeout();
@@ -28,7 +28,7 @@ fastify.get("/getDogsInfo", function handler(request, reply) {
 
   if (dogsWorker.workerTerminated) {
     dogsWorker = new WorkerClass("getDogsWorker");
-    console.log("-> dogsWorker is being created");
+    console.log("-> getDogsWorker is being created");
   }
   dogsWorker.worker.postMessage({ requestId: request.id });
   dogsWorker.resetIdleTimeout();
