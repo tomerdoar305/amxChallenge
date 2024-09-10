@@ -2,6 +2,20 @@
 
 ## Email: tomerdoar@hotmail.com
 
+# Set-up
+
+Run the below commands to set up the project:
+
+```bash
+npm i
+npm start
+```
+
+It will start the server on port 3000. You can access the APIs using the below URLs:
+
+- getCatsInfo: http://localhost:3000/getCatsInfo
+- getDogsInfo: http://localhost:3000/getDogsInfo
+
 ## Answers:
 
 ## Task 1 - Identify and fix the issue with getCatsInfo API
